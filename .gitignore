@@ -25,3 +25,6 @@ Manifest.toml
 
 # Don't save results in the repo
 results/
+
+.vscode
+.DS_Store

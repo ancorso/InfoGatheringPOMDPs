@@ -125,3 +125,21 @@ function eval_kfolds(pomdps, policy_fn, test_sets; rng=Random.GLOBAL_RNG, fix_se
     finish!(p)
     return Dict(k => [r[k] for r in results] for k in keys(results[1]))
 end
+
+function eval_kfolds_difftest(eval_pomdps, train_pomdps, policy_fn, test_sets; rng=Random.GLOBAL_RNG, fix_seed=true)
+    Ntest_sets = length.(test_sets)
+    test_starts = [1, (cumsum(Ntest_sets)[1:end-1] .+ 1)...]
+    results = Array{Any}(undef, sum(Ntest_sets))
+    p = Progress(sum(Ntest_sets), 1, "Evaluating policy on test sets...")
+    for (i, (eval_pomdp, train_pomdp, test_set)) in collect(enumerate(zip(eval_pomdps, train_pomdps, test_sets)))
+        fix_seed && Random.seed!(rng, i) # Fix the seed before potentially solving the policy
+        policy = policy_fn(train_pomdp)
+        Threads.@threads for (j, s) in collect(enumerate(test_set))
+            fix_seed && Random.seed!(rng, i+j) # Fix the seed for evaluation
+            results[test_starts[i] + j - 1] = eval_single(eval_pomdp, policy, s; rng)
+            next!(p)
+        end
+    end
+    finish!(p)
+    return Dict(k => [r[k] for r in results] for k in keys(results[1]))
+end

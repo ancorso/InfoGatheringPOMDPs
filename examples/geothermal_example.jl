@@ -27,24 +27,19 @@ if length(ARGS) > 0
     end
 end
 
-# Define the save directory. This will through an error if the savedir already exists
-savedir="./results/updated_solver/"
-try mkdir(savedir) catch end
+# Set the discount factor and load corresponding scenarios
+discount_factor = 0.93 # Annual discount factor (options are 0.87, 0.9, 0.93)
+df_str = "$(round(Int, (1-discount_factor)*100))"
+df_folder = "Discount_$(df_str)"
 
-# Define the scenarios and corresponding paths to CSV files
-scenario_csvs = OrderedDict(
-        Symbol("Option 1") => "./examples/data/Geothermal Reservoir/DSSCEN1_50N_POMDP.csv", # Scenar
-        Symbol("Option 2") => "./examples/data/Geothermal Reservoir/DSSCEN2_50N_POMDP.csv",
-        Symbol("Option 3") => "./examples/data/Geothermal Reservoir/DSSCEN3_50N_POMDP.csv",
-        Symbol("Option 4") => "./examples/data/Geothermal Reservoir/DSSCEN4_50N_POMDP.csv",
-        Symbol("Option 5") => "./examples/data/Geothermal Reservoir/DSSCEN5_50N_POMDP.csv",
-        Symbol("Option 6") => "./examples/data/Geothermal Reservoir/DSSCEN6_50N_POMDP.csv",
-        Symbol("Option 7") => "./examples/data/Geothermal Reservoir/DSSCEN7_50N_POMPDP.csv",
-        Symbol("Option 8") => "./examples/data/Geothermal Reservoir/DSSCEN8_50_POMDP.csv",
-        Symbol("Option 9") => "./examples/data/Geothermal Reservoir/DSSCEN10_50N_POMPD.csv",
-        Symbol("Option 10") => "./examples/data/Geothermal Reservoir/DSSCEN11_50N_POMPD .csv",
-        Symbol("Option 11") => "./examples/data/Geothermal Reservoir/DSSCEN13_50N_POMDP.csv"
-    )
+# Define the save directory. This will through an error if the savedir already exists
+savedir="./results/discount_factors/df$df_str"
+mkpath(savedir)
+
+# Load the scenario
+scenarios_path = joinpath("./examples/data/Geothermal Reservoir/", df_folder)
+files = readdir(scenarios_path)
+scenario_csvs = OrderedDict(Symbol("Option $i") => joinpath(scenarios_path, files[i]) for i in 1:length(files))
 
 # Define the set of geological and economic parameters so geo models can be separated
 geo_params = ["par_P_Std", "par_P_Mean", "par_PMax", "par_AZ", "par_PMin", "par_PV", "par_SEED", "par_Zmax", "par_Zmin", "par_SEEDTrend", "par_C_WATER", "par_P_INIT", "par_FTM", "par_KVKH", "par_C_ROCK", "par_THCOND_RES", "par_HCAP_RES", "par_TempGrad"]
@@ -116,10 +111,7 @@ obs_actions = [
 Nbins = fill(2, length(obs_actions[1:end]))
 Nbins[findall([a.name == "Drill 3 Wells" for a in obs_actions])] .= 5
 
-# Set the discount factor
-discount_factor = 0.90 # Annual discount factor
-
-# Create the pomdp, the validation and teest sets
+# Create the pomdp, the validation and test sets
 pomdps, test_sets = create_pomdps(
     scenario_csvs, 
     geo_params, 

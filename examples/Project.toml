@@ -1,0 +1,10 @@
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+InfoGatheringPOMDPs = "d8e2e387-e16b-4908-86c5-4a2f7c6569b3"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+NativeSARSOP = "a07c76ea-660d-4c9a-8028-2e6dbd212cb8"
+POMDPTools = "7588e00f-9cae-40de-98dc-e0c70c48cdd7"
+POMDPs = "a93abf59-7444-517b-a68a-c42f96afdd7d"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"

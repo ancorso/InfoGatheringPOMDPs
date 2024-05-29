@@ -32,7 +32,7 @@ include("pomdp.jl")
 export BestCurrentOption, EnsureParticleCount, FixedPolicy, RandPolicy, OneStepGreedyPolicy, PreSolved, onestep_alphavec_policy, WalkAwayNextLB
 include("policies.jl")
 
-export discounted_reward, observation_cost, number_observed, correct_scenario, correct_gonogo, PES, expected_loss, eval_single, eval_kfolds
+export discounted_reward, observation_cost, number_observed, correct_scenario, correct_gonogo, PES, expected_loss, eval_single, eval_kfolds, eval_kfolds_difftest
 include("metrics.jl")
 
 export policy_results_summary, policy_comparison_summary, train_states_comparison_summary, 
